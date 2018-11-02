@@ -40,18 +40,49 @@
   // Check out the dog.ceo API here: https://dog.ceo/dog-api/
   //
   // 1) Add a click event to the "Generate Doggo" button
+
+  $('#generateDoggoBtn').click(clickEvt)
+
   //
   // 2) In your event handler, make an AJAX request to https://dog.ceo/api/breeds/image/random
   //    which will return JSON data.
   //    Hint: there is a very convenient jQuery method for getting JSON data
-  //
+  
+  function clickEvt (evt) {
+    console.info('you clicked it!')
+    $.getJSON('https://dog.ceo/api/breeds/image/random', receiveRandomDog)
+    changeBtn()
+  }
+
+  function changeBtn (evt) {
+    var doggoBtn = document.getElementById('generateDoggoBtn')
+    doggoBtn.innerHTML = 'Generating Doggo ...'
+    $('#generateDoggoBtn').attr('disabled', 'disabled')
+  }
+
+  function receiveRandomDog (data) {
+    console.log('receive random dog:')
+    console.log(data)
+    var randomDogUrl = data.message
+    console.log(data.message)
+    $('<img id="randomdog">').appendTo('#doggoContainer')
+    $('#randomdog').attr('src', data.message)
+    changeBtnBack()
+  }
+
+  function changeBtnBack () {
+    var doggoBtn = document.getElementById('generateDoggoBtn')
+    doggoBtn.innerHTML = 'Generate Doggo'
+    $('#generateDoggoBtn').removeAttr('disabled')
+  }
+
   // 3) Look at the Network tab in Chrome Dev Tools and confirm that an HTTP request
   //    is being sent every time you click the "Generate Doggo" button.
   //
   // 4) When the button is clicked, change the button text to "Generating Doggo …"
   //    and add the "disabled" attribute to the button so it is no longer clickable.
   //    Hint: jQuery has methods for changing DOM attributes: http://api.jquery.com/attr/
-  //
+
   // 5) The callback function for your AJAX request takes three parameters (function arguments).
   //    The first argument is the data returned from the request. Note that jQuery took the raw
   //    JSON response text and did JSON.parse() to deserialize the data for you (convenient, right?).
@@ -76,7 +107,27 @@
   // Cool. Now let's kick it up a notch and allow selecting a specific breed of dog!
   //
   // 1) Add an empty dropdown menu (ie: <select></select>) to the <div id="selectBreedContainer"> element.
-  //
+  
+  $('<select id="select"></select>').appendTo('#selectBreedContainer')
+
+
+  $('#select').click(clickSelect)
+
+  function clickSelect (evt) {
+    console.info('you clicked it!')
+    // changeBtn()
+  }
+
+  $( function () {
+    $.getJSON('https://dog.ceo/api/breeds/list', receiveBreedsList)
+  })
+
+  function receiveBreedsList (data) {
+    console.log('you got it!')
+    console.log(data)
+    // use jquery each to create option values in select div
+  }
+
   // 2) Using a *different* jQuery AJAX method than you used in the above example, make a
   //    GET request to https://dog.ceo/api/breeds/list when the page first loads.
   //
