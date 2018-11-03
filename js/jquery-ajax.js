@@ -47,9 +47,8 @@
   // 2) In your event handler, make an AJAX request to https://dog.ceo/api/breeds/image/random
   //    which will return JSON data.
   //    Hint: there is a very convenient jQuery method for getting JSON data
-  
+
   function clickEvt (evt) {
-    console.info('you clicked it!')
     $.getJSON('https://dog.ceo/api/breeds/image/random', receiveRandomDog)
     changeBtn()
   }
@@ -61,10 +60,6 @@
   }
 
   function receiveRandomDog (data) {
-    console.log('receive random dog:')
-    console.log(data)
-    var randomDogUrl = data.message
-    console.log(data.message)
     $('<img id="randomdog">').appendTo('#doggoContainer')
     $('#randomdog').attr('src', data.message)
     changeBtnBack()
@@ -107,26 +102,55 @@
   // Cool. Now let's kick it up a notch and allow selecting a specific breed of dog!
   //
   // 1) Add an empty dropdown menu (ie: <select></select>) to the <div id="selectBreedContainer"> element.
-  
+
   $('<select id="select"></select>').appendTo('#selectBreedContainer')
 
-
   $('#select').click(clickSelect)
+  $('#select').on('change', changeSelection)
 
   function clickSelect (evt) {
     console.info('you clicked it!')
-    // changeBtn()
   }
 
-  $( function () {
+  $(function () {
     $.getJSON('https://dog.ceo/api/breeds/list', receiveBreedsList)
   })
 
-  function receiveBreedsList (data) {
-    console.log('you got it!')
-    console.log(data)
-    // use jquery each to create option values in select div
+  function createOption (breed) {
+    return `<option value="${breed}">${breed}</option>`
   }
+
+  function receiveBreedsList (data) {
+    const optionsHTML = data.message.map(createOption).join('')
+    $(optionsHTML).appendTo('#select')
+  }
+
+  function changeSelection () {
+    console.log('pick a dog, any dog')
+    var theDogPicked = $('#select').val()
+    console.log(theDogPicked)
+    getDog()
+  }
+
+  function getDog () {
+    var theDogPicked = $('#select').val()
+    console.log('theDogPicked')
+    var pickedURL = 'https://dog.ceo/api/breed/' + theDogPicked + '/images/random'
+    console.log(pickedURL)
+    $.getJSON(pickedURL, showDog)
+  }
+
+  function showDog (data) {
+    $('<img id="selecteddog">').appendTo('#selectBreedContainer')
+    $('#selecteddog').attr('src', data.message)
+  }
+
+
+  // Add a "change" event to the <select> element using $.on() http://api.jquery.com/on/
+  //
+  //    In your change event, make a GET request to https://dog.ceo/api/breed/{breed name}/images/random
+  //    where {breed name} is the value from your <select> menu.
+
 
   // 2) Using a *different* jQuery AJAX method than you used in the above example, make a
   //    GET request to https://dog.ceo/api/breeds/list when the page first loads.
